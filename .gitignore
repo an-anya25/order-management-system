@@ -1,0 +1,37 @@
+# Java / Spring Boot
+target/
+*.class
+*.jar
+*.war
+*.log
+
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+
+# Docker
+docker-compose.override.yml
+
+# Redis
+redis-data/
+dump.rdb
+appendonly.aof
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary
+out/
+temp/
+tmp/
