@@ -6,10 +6,10 @@ import com.oms.auth_service.entity.User;
 import com.oms.auth_service.exception.EmailAlreadyExistsException;
 import com.oms.auth_service.exception.UserNotFoundException;
 import com.oms.auth_service.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;

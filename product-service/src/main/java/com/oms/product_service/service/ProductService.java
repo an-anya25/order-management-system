@@ -7,10 +7,10 @@ import com.oms.product_service.exception.DuplicateProductNameException;
 import com.oms.product_service.exception.ProductNotFoundException;
 import com.oms.product_service.repository.ProductRepository;
 import com.oms.product_service.security.JwtPrincipal;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -94,7 +94,7 @@ public class ProductService {
         product.setActive(false);
     }
 
-    public ProductDto mapProductToProductDto(Product product){
+    private ProductDto mapProductToProductDto(Product product){
         return ProductDto.builder()
                 .id(product.getId())
                 .name(product.getName())
