@@ -7,6 +7,7 @@ import com.oms.order_service.dto.ProductDto;
 import com.oms.order_service.dto.UserDto;
 import com.oms.order_service.entity.Order;
 import com.oms.order_service.exception.OrderAccessDeniedException;
+import com.oms.order_service.exception.OrderNotFoundException;
 import com.oms.order_service.repository.OrderRepository;
 import com.oms.order_service.security.JwtPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -72,5 +76,43 @@ public class OrderService {
                 .user(new UserDto(order.getUserId(), order.getUserName(),order.getUserEmail()))
                 .build();
 
+    }
+
+    public List<OrderDto> getMyOrders() {
+        JwtPrincipal principal = getLoggedInPrincipal();
+        return orderRepository.findByUserId(principal.userId()).stream()
+                .map(this::mapOrderToOrderDto)
+                .toList();
+    }
+
+    public OrderDto getMyOrder(Long id) {
+        JwtPrincipal principal = getLoggedInPrincipal();
+        Order order = orderRepository.findById(id)
+                .orElseThrow(()->new OrderNotFoundException("Order not found with id: "+id));
+
+        if (!Objects.equals(order.getUserId(),principal.userId())){
+            throw new OrderAccessDeniedException("You do not have access to this order");
+        }
+
+        return mapOrderToOrderDto(order);
+    }
+
+    public List<OrderDto> getAllOrders() {
+        return orderRepository.findAll().stream()
+                .map(this::mapOrderToOrderDto)
+                .toList();
+    }
+
+    public List<OrderDto> getOrdersByUser(Long userId) {
+        return orderRepository.findByUserId(userId).stream()
+                .map(this::mapOrderToOrderDto)
+                .toList();
+    }
+
+    public void deleteOrder(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(()->new OrderNotFoundException("Order not found with id: "+id));
+
+        orderRepository.delete(order);
     }
 }

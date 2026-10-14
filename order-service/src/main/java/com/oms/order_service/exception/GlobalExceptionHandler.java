@@ -32,6 +32,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponseDto("ORDER_ACCESS_DENIED", ex.getMessage()));
     }
 
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleOrderNotFoundException(OrderNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponseDto("ORDER_NOT_FOUND", ex.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
         HashMap<String,String> fieldErrors = new HashMap<>();
