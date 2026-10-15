@@ -8,6 +8,7 @@ import com.oms.order_service.dto.UserDto;
 import com.oms.order_service.entity.Order;
 import com.oms.order_service.exception.OrderAccessDeniedException;
 import com.oms.order_service.exception.OrderNotFoundException;
+import com.oms.order_service.kafka.OrderEventPublisher;
 import com.oms.order_service.repository.OrderRepository;
 import com.oms.order_service.security.JwtPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ public class OrderService {
     private final HttpServletRequest httpServletRequest;
     private final ProductClient productClient;
     private final OrderRepository orderRepository;
+    private final OrderEventPublisher orderEventPublisher;
 
     private JwtPrincipal getLoggedInPrincipal(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -64,6 +66,7 @@ public class OrderService {
                 .build();
 
         Order saved = orderRepository.save(order);
+        orderEventPublisher.publishOrderCreated(saved);
         return mapOrderToOrderDto(saved);
     }
 
