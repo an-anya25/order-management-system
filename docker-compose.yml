@@ -59,6 +59,16 @@ services:
     networks:
       - oms-network
 
+  notification-service:
+    build: ./notification-service
+    container_name: oms-notification-service
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - kafka
+    networks:
+      - oms-network
+
 
   kafka:
     image: apache/kafka:4.1.1
@@ -80,6 +90,16 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
     volumes:
       - kafka-data:/var/lib/kafka/data
+    networks:
+      - oms-network
+
+  log-viewer:
+    image: amir20/dozzle:latest
+    container_name: log-viewer
+    ports:
+      - "8888:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - oms-network
 
